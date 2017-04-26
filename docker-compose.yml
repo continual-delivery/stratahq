@@ -37,7 +37,8 @@
        context: .
      command: python manage.py runserver 0.0.0.0:8000
      volumes:
-       - .:/code
+       - .:/code:ro
+       - ./data:/code/data:rw
      ports:
        - "8000:8000"
      depends_on:
@@ -52,7 +53,8 @@
        context: .
      command: celery -A stratahq worker -l info
      volumes:
-       - .:/code
+       - .:/code:ro
+       - ./data:/code/data:rw
      depends_on:
        - redis
        - web
@@ -66,7 +68,8 @@
        context: .
      command: celery -A stratahq beat -l info -S django --pidfile /tmp/celerybeat.pid -s /tmp/celery-beat
      volumes:
-       - .:/code
+       - .:/code:ro
+       - ./data:/code/data:rw
      depends_on:
        - redis
        - web

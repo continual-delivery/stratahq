@@ -91,6 +91,6 @@ app.conf.beat_schedule = {
     },
     'managedservers-health': {
          'task': 'assets.tasks.get_managed_servers',
-         'schedule': 60,
+         'schedule': 30,
     },
 }

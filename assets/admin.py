@@ -35,6 +35,19 @@ class WeblogicServerAdmin(admin.ModelAdmin):
                     '_nodemanager', '_adminserver', '_servers',)
     list_filter = ('role', 'environment', 'owner', 'status', 'os',)
 
+    fieldsets = (
+        ('Server Information', {
+            'fields': ('name',
+                       'primary_ip',
+                       'owner',
+                       'role',
+                       'environment',
+                       'status'),
+        }),
+        ('weblogic Information', {
+            'fields': ('edition', 'nodemanager_port', 'adminserver_port'),
+        }),
+    )
 
     def _nodemanager(self, obj):
         return obj.nodemanager_health()
@@ -48,12 +61,18 @@ class WeblogicServerAdmin(admin.ModelAdmin):
         srv_json = obj.managed_servers()
         print(srv_json)
 
-        html = "<table>"
+        html = '<table>'
         if isinstance(srv_json, list):
+
             for s in srv_json:
-                html += '<tr><th>%s</th><td>%s</td><td>%s</td></tr>' % (s['name'], s['state'], s['health'])
+                # Create a row but sort out CSS to make table rows smaller
+                html += '<tr><th style="all:unset; padding-right:5px;"><strong>%s</strong></th>' \
+                        '<td style="all: unset; padding-right:5px;">%s</td>' \
+                        '<td style="all: unset; padding-right:5px;">%s</td></tr>' % (s['name'],
+                                                                                     s['state'],
+                                                                                     s['health'])
         else:
-            html += '<tr><th>%s</th></tr>' % srv_json
+            html += '<tr><th style="all:unset; padding-right:5px;"><strong>%s</strong></th></tr>' % srv_json
         html += "</table>"
         return mark_safe(html)
 
