@@ -219,7 +219,7 @@ class WeblogicServer(Server):
         try:
             return cache.get(ckey)['body']['items']
         except:
-            return 'HTTP Error: %s' % cache.get(ckey)
+            return 'Error: %s' % str(cache.get(ckey))
 
 
 class WindowsServer(Server):
