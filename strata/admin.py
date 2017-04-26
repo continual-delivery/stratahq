@@ -24,8 +24,6 @@ class StrataServerAdmin(admin.ModelAdmin):
 
     def _servers(self, obj):
         srv_json = obj.managed_servers()
-        print(srv_json)
-
         html = '<table>'
         if isinstance(srv_json, list):
 
