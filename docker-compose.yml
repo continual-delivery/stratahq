@@ -1,0 +1,76 @@
+ version: '3'
+
+ services:
+
+   apiprx:
+     build:
+       context: ./docker_files/openresty
+     ports:
+       - "3000:3000"
+     volumes:
+       - ./docker_files/openresty/src:/src
+     links:
+       - weblogic
+
+   weblogic:
+     image: opavlova/weblogic:12.2.1
+     ports:
+       - "8001:8001"
+       - "7001:7001"
+
+   jenkins:
+     build:
+       context: ./docker_files/jenkins
+     ports:
+       - "8080:8080"
+     volumes:
+       - ./docker_files/jenkins/data:/var/jenkins_home
+     links:
+       - weblogic
+       - apiprx
+
+   redis:
+     image: redis:latest
+
+   web:
+     build:
+       context: .
+     command: python manage.py runserver 0.0.0.0:8000
+     volumes:
+       - .:/code
+     ports:
+       - "8000:8000"
+     depends_on:
+       - redis
+     links:
+       - redis
+       - jenkins
+       - apiprx
+
+   celery-worker:
+     build:
+       context: .
+     command: celery -A stratahq worker -l info
+     volumes:
+       - .:/code
+     depends_on:
+       - redis
+       - web
+     links:
+       - redis
+       - jenkins
+       - apiprx
+
+   celery-beat:
+     build:
+       context: .
+     command: celery -A stratahq beat -l info -S django --pidfile /tmp/celerybeat.pid -s /tmp/celery-beat
+     volumes:
+       - .:/code
+     depends_on:
+       - redis
+       - web
+     links:
+       - redis
+       - jenkins
+       - apiprx
