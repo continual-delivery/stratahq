@@ -11,7 +11,7 @@ from .models import StrataServer, StrataApplication, StrataApplicationStack, \
 @admin.register(StrataServer)
 class StrataServerAdmin(admin.ModelAdmin):
     list_display = ('name', 'primary_ip', 'owner', 'role', 'puppet_role', 'environment', 'puppet_environment',
-                    '_nodemanager', '_adminserver',)
+                    '_nodemanager', '_adminserver','_servers',)
     list_filter = ('environment', 'owner',)
 
     def _nodemanager(self, obj):
@@ -22,6 +22,18 @@ class StrataServerAdmin(admin.ModelAdmin):
         return obj.adminserver_health()
     _adminserver.boolean = True
 
+    def _servers(self, obj):
+        srv_json = obj.managed_servers()
+        print(srv_json)
+
+        html = "<table>"
+        if isinstance(srv_json, list):
+            for s in srv_json:
+                html += '<tr><th>%s</th><td>%s</td><td>%s</td></tr>' % (s['name'], s['state'], s['health'])
+        else:
+            html += '<tr><th>%s</th></tr>' % srv_json
+        html += "</table>"
+        return mark_safe(html)
 
 @admin.register(StrataApplication)
 class StrataApplicationAdmin(admin.ModelAdmin):
