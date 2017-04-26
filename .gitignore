@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Docker volume data
+docker_files/jenkins/data/
+!docker_files/jenkins/data/.gitkeep
+
 # database
 *.sqlite3
 migrations
