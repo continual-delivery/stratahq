@@ -1,2 +1,2 @@
-# strata-hq
+# stratahq
 A django based management interface for orchestrating and managing the Strata ecosystem
