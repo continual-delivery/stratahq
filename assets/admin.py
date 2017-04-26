@@ -32,7 +32,7 @@ class ServerAdmin(admin.ModelAdmin):
 @admin.register(WeblogicServer)
 class WeblogicServerAdmin(admin.ModelAdmin):
     list_display = ('name', 'primary_ip', 'is_virtual', 'virtual_host', 'edition', 'status', 'owner', 'environment',
-                    '_nodemanager', '_adminserver',)
+                    '_nodemanager', '_adminserver', '_servers',)
     list_filter = ('role', 'environment', 'owner', 'status', 'os',)
 
 
@@ -43,6 +43,20 @@ class WeblogicServerAdmin(admin.ModelAdmin):
     def _adminserver(self, obj):
         return obj.adminserver_health()
     _adminserver.boolean = True
+
+    def _servers(self, obj):
+        srv_json = obj.managed_servers()
+        print(srv_json)
+
+        html = "<table>"
+        if isinstance(srv_json, list):
+            for s in srv_json:
+                html += '<tr><th>%s</th><td>%s</td><td>%s</td></tr>' % (s['name'], s['state'], s['health'])
+        else:
+            html += '<tr><th>%s</th></tr>' % srv_json
+        html += "</table>"
+        return mark_safe(html)
+
 
     # We basically want to prevent WebLogic servers from being manipulated here altogether
     # They should be managed from specific applications admin pages

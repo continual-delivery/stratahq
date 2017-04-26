@@ -5,7 +5,7 @@ from .utils import timedgethostbyname
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.core.cache import cache
-
+import json
 
 _SERVERROLES = (
     ('app', 'Strata App Server'),
@@ -186,7 +186,9 @@ class WeblogicServer(Server):
     """
     edition = models.CharField(max_length=16, choices=_WEBLOGIC_EDITIONS, default='standard')
     nodemanager_port = models.PositiveSmallIntegerField(validators=[is_unprivileged_port], default=5666)
+    nodemanager_ssl = models.BooleanField(default=False)
     adminserver_port = models.PositiveSmallIntegerField(validators=[is_unprivileged_port], default=7001)
+    adminserver_ssl = models.BooleanField(default=False)
     adminserver_user = models.CharField(max_length=256, default='weblogic')
     adminserver_pass = models.CharField(max_length=256, default='letmein1')
 
@@ -205,15 +207,19 @@ class WeblogicServer(Server):
             return False
 
     def adminserver_health(self):
-        connect_to = self.connect_to()
-        adminserver_port = self.adminserver_port
-
-        ckey = 'tcp:%s:%d' % (connect_to, adminserver_port)
+        ckey = 'tcp:%s:%d' % (self.connect_to(), self.adminserver_port)
 
         if cache.get(ckey) is 200:
             return True
         else:
             return False
+
+    def managed_servers(self):
+        ckey = 'weblogic:%s:managedservers' % self.connect_to()
+        try:
+            return cache.get(ckey)['body']['items']
+        except:
+            return 'HTTP Error: %s' % cache.get(ckey)
 
 
 class WindowsServer(Server):
