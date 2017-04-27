@@ -1,13 +1,54 @@
 from __future__ import absolute_import, unicode_literals
-from celery import shared_task
+from celery import shared_task, Task
 from .models import WeblogicServer
 import requests
 from django.core.cache import cache
 from stratahq.celery import app
-from logging import log
+import jenkins
+from stratahq.settings import JENKINS
 
 
-# Weblogic tasks
+# Jenkins tasks
+class JenkinsTask(Task):
+    _master = None
+
+    @property
+    def master(self):
+        if self._master is None:
+            self._master = jenkins.Jenkins(JENKINS['SERVER'], username=JENKINS['USER'], password=JENKINS['KEY'])
+        return self._master
+
+
+@app.task(base=JenkinsTask)
+def run_jenkins_job(job_name, parameters={}):
+    pass
+
+@app.task(base=JenkinsTask)
+def update_jenkins_joblist():
+    """
+    This background task runs to keep a dict of job names.
+    """
+    jobs = []
+    for job in update_jenkins_joblist.master.get_jobs():
+        """
+        a job looks like this:
+        {
+	        '_class': 'hudson.model.FreeStyleProject',
+	        'name': 'some-task',
+	        'url': 'http://jenkins:8080/job/some-task/',
+	        'color': 'blue',
+	        'fullname': 'some-task'
+        }
+        """
+        j = {}
+        j[job['name']] = job['fullname']
+        
+        jobs.append(j.copy())
+
+    cache.set('jenkins_joblist', jobs, 600)
+
+
+# Weblogic tasks - Probably need a refactor here...?
 @shared_task
 def get_nodemanager_health():
     """Scheduled task to get nodemanager health in the background"""
@@ -68,7 +109,6 @@ def get_weblogic_api(ckey, user, pwd, headers, uri):
             cache.set(ckey, r.status_code, timeout=180)
     except Exception as e:
         cache.set(ckey, 'ERROR', timeout=180)
-        log.error(str(e))
 
 
 @shared_task
@@ -90,7 +130,11 @@ app.conf.beat_schedule = {
         'schedule': 30,
     },
     'managedservers-health': {
-         'task': 'assets.tasks.get_managed_servers',
-         'schedule': 30,
+        'task': 'assets.tasks.get_managed_servers',
+        'schedule': 30,
+    },
+    'jenkins-jobslist': {
+        'task': 'assets.tasks.update_jenkins_joblist',
+        'schedule': 300,
     },
 }

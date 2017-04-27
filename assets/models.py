@@ -1,11 +1,10 @@
 from django.db import models
-from management.models import Environment
+from management.models import Environment, _TEAMS
 from .validators import is_valid_hostname, is_unprivileged_port
 from .utils import timedgethostbyname
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.core.cache import cache
-import json
 
 _SERVERROLES = (
     ('app', 'Strata App Server'),
@@ -14,13 +13,6 @@ _SERVERROLES = (
     ('lb', 'HAProxy Load Balancer'),
     ('ovm', 'OVM Host'),
     ('vm', 'VMWare Host'),
-)
-
-_TEAMS = (
-    ('strata', 'Strata Admin'),
-    ('devs', 'Development Teams'),
-    ('webs', 'Web Services'),
-    ('server', 'Server Team'),
 )
 
 _OS = (

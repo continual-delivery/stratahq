@@ -1,5 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User, Group
 
+_TEAMS = (
+    ('strata', 'Strata Admin'),
+    ('devs', 'Development Teams'),
+    ('webs', 'Web Services'),
+    ('server', 'Server Team'),
+)
 
 class Customer(models.Model):
     """A customer. A dev squad is also considered a customer."""
@@ -40,3 +47,13 @@ class CustomerEnvironment(models.Model):
     def save(self, *args, **kwargs):
         self.name = '%s_%s' % (self.customer.short_name, self.environment.short_name)
         super(CustomerEnvironment, self).save(*args, **kwargs)
+
+
+class Team(models.Model):
+    """This model holds the users / groups assigned to teams"""
+    team = models.CharField(unique=True, max_length=32, choices=_TEAMS)
+    users = models.ManyToManyField(User, blank=True)
+    groups = models.ManyToManyField(Group, blank=True)
+
+    def __str__(self):
+        return '%s' % self.get_team_display()

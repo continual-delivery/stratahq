@@ -159,3 +159,10 @@ ADMIN_SITE_HEADER = "Strata HQ"
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
+# Jenkins related config
+JENKINS = {
+    'SERVER': 'http://jenkins:8080',
+    'USER': 'STRATAHQ',
+    'KEY': '2a566d23947c92f777ae6e0658d7c660',
+}
