@@ -23,6 +23,7 @@ class JenkinsTask(Task):
 def run_jenkins_job(job_name, parameters={}):
     pass
 
+
 @app.task(base=JenkinsTask)
 def update_jenkins_joblist():
     """
@@ -35,17 +36,17 @@ def update_jenkins_joblist():
         {
 	        '_class': 'hudson.model.FreeStyleProject',
 	        'name': 'some-task',
-	        'url': 'http://jenkins:8080/job/some-task/',
+            'url': 'http://jenkins:8080/job/some-task/',
 	        'color': 'blue',
 	        'fullname': 'some-task'
         }
         """
-        j = {}
-        j[job['name']] = job['fullname']
-        
-        jobs.append(j.copy())
 
-    cache.set('jenkins_joblist', jobs, 600)
+        j = (job['name'], job['fullname'])
+        jobs.append(j)
+
+    # We'll make this persistent in the cache. but still update it regularly.
+    cache.set('jenkins_joblist', jobs, 0)
 
 
 # Weblogic tasks - Probably need a refactor here...?
