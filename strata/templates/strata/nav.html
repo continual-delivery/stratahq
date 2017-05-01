@@ -1,0 +1,14 @@
+<li class="{% if request.get_full_path == "/strata/" %}active{% endif %}">
+    <a href="/strata/"><i class="fa fa-desktop"></i> <span class="nav-label">Strata</span><span class="fa arrow"></span></a>
+    <ul class="nav nav-second-level collapse">
+        <li class="{% if request.get_full_path == "/strata/servers/" %}active{% endif %}">
+            <a href="/strata/servers/"><i class="fa fa-server" aria-hidden="true"></i> Servers</a>
+        </li>
+        <li class="{% if request.get_full_path == "/strata/environments/" %}active{% endif %}">
+            <a href="/strata/environments/"><i class="fa fa-cloud" aria-hidden="true"></i> Environments</a>
+        </li>
+        <li class="{% if request.get_full_path == "/strata/deployments/" %}active{% endif %}">
+            <a href="/strata/deployments/"><i class="fa fa-cloud-upload" aria-hidden="true"></i> Deployments</a>
+        </li>
+    </ul>
+</li>

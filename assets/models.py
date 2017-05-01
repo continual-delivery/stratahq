@@ -5,6 +5,7 @@ from .utils import timedgethostbyname
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.core.cache import cache
+from .services import all_jobs
 
 _SERVERROLES = (
     ('app', 'Strata App Server'),
@@ -187,33 +188,6 @@ class WeblogicServer(Server):
     def __str__(self):
         return self.name
 
-    def nodemanager_health(self):
-        connect_to = self.connect_to()
-        nodemanager_port = self.nodemanager_port
-
-        ckey = 'tcp:%s:%d' % (connect_to, nodemanager_port)
-
-        if cache.get(ckey) is 200:
-            return True
-        else:
-            return False
-
-    def adminserver_health(self):
-        ckey = 'tcp:%s:%d' % (self.connect_to(), self.adminserver_port)
-
-        if cache.get(ckey) is 200:
-            return True
-        else:
-            return False
-
-    def managed_servers(self):
-        ckey = 'weblogic:%s:managedservers' % self.connect_to()
-        try:
-            return cache.get(ckey)['body']['items']
-        except:
-            return 'Error: %s' % str(cache.get(ckey))
-
-
 class WindowsServer(Server):
     """
     Windows servers have Windows stuff
@@ -273,11 +247,11 @@ class Application(models.Model):
 
     nexus_url = models.URLField(null=True, blank=True,
                                 help_text='URL to Nexus assets')
-    pre_deploy_job = models.CharField(max_length=32, null=True, blank=True,
+    pre_deploy_job = models.CharField(max_length=32, null=True, blank=True, choices=all_jobs(),
                                   help_text='The name of the Jenkins job to run before deploying this application')
-    deploy_job = models.CharField(max_length=32, null=True, blank=True,
+    deploy_job = models.CharField(max_length=32, null=True, blank=True, choices=all_jobs(),
                                       help_text='The name of the Jenkins job to deploy this application')
-    post_deploy_job = models.CharField(max_length=32, null=True, blank=True,
+    post_deploy_job = models.CharField(max_length=32, null=True, blank=True, choices=all_jobs(),
                                       help_text='The name of the Jenkins job to run after deploying this application')
 
     class Meta(object):
@@ -298,11 +272,11 @@ class ApplicationStack(models.Model):
     description = models.TextField(max_length=512)
     valid_target = models.CharField(max_length=32, choices=_SERVERROLES, null=True, blank=True,
                                     help_text='What server role can this stack be deployed onto?')
-    pre_deploy_job = models.CharField(max_length=32, null=True, blank=True,
+    pre_deploy_job = models.CharField(max_length=32, null=True, blank=True, choices=all_jobs(),
                                   help_text='The name of the Jenkins job to run before deploying this application')
-    deploy_job = models.CharField(max_length=32, null=True, blank=True,
+    deploy_job = models.CharField(max_length=32, null=True, blank=True, choices=all_jobs(),
                                       help_text='The name of the Jenkins job to deploy this application')
-    post_deploy_job = models.CharField(max_length=32, null=True, blank=True,
+    post_deploy_job = models.CharField(max_length=32, null=True, blank=True, choices=all_jobs(),
                                       help_text='The name of the Jenkins job to run after deploying this application')
 
     class Meta(object):
@@ -323,6 +297,9 @@ class TaskHistory(models.Model):
     duration = models.DurationField(null=True, blank=True)
     status = models.CharField(max_length=16, choices=_TASK_STATUSES, db_index=True)
     task_log = models.URLField()
+    ran_by = models.CharField(max_length=64, default='Admin User')
+    reason = models.CharField(max_length=128, default='-')
+    level = models.CharField(max_length=32, default='primary')
 
     class Meta:
         ordering = ('-start_time',)

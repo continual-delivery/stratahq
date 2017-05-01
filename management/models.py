@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 
 _TEAMS = (
     ('strata', 'Strata Admin'),
-    ('devs', 'Development Teams'),
+    ('dev', 'Developer'),
     ('webs', 'Web Services'),
     ('server', 'Server Team'),
 )

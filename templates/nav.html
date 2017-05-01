@@ -1,0 +1,31 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold"> {{ user.get_full_name|default:user.username }}</strong><b class="caret"></b>
+                             </span> <span class="text-muted text-xs block">
+                                {% for team in user.team_set.all %}
+                                    {{ team }}<br />
+                                {% endfor %}</span> </span> </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a href="/logout">Logout</a></li>
+                    </ul>
+                </div>
+                <div class="logo-element">
+                    HQ+
+                </div>
+            </li>
+            {% include 'home/nav.html' %}
+            {% for team in user.team_set.all %}
+                {% if 'strata' == team.team %}
+                    {% include 'strata/nav.html' %}
+                {% endif %}
+            {% endfor %}
+            {% include 'assets/nav.html' %}
+
+        </ul>
+
+    </div>
+</nav>

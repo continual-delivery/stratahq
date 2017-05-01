@@ -1,0 +1,20 @@
+<li class="{% if request.get_full_path == "/assets/" %}active{% endif %}">
+    <a href="/assets/"><i class="fa fa-th-large"></i> <span class="nav-label">Assets</span><span class="fa arrow"></span></a>
+    <ul class="nav nav-second-level collapse">
+        <li class="{% if request.get_full_path == "/assets/servers/" %}active{% endif %}">
+            <a href="/assets/servers/"><i class="fa fa-server" aria-hidden="true"></i> Servers</a>
+        </li>
+        <li class="{% if request.get_full_path == "/assets/virtualization/" %}active{% endif %}">
+            <a href="/assets/virtualization/"><i class="fa fa-th" aria-hidden="true"></i> Virtualization</a>
+        </li>
+        <li class="{% if request.get_full_path == "/assets/applications/" %}active{% endif %}">
+            <a href="/assets/applications/"><i class="fa fa-desktop" aria-hidden="true"></i> Applications</a>
+        </li>
+        <li class="{% if request.get_full_path == "/assets/weblogic/" %}active{% endif %}">
+            <a href="/assets/weblogic/"><i class="fa fa-money" aria-hidden="true"></i> Weblogic</a>
+        </li>
+        <li class="{% if request.get_full_path == "/assets/loadbalancers/" %}active{% endif %}">
+            <a href="/assets/loadbalancers/"><i class="fa fa-sitemap" aria-hidden="true"></i> Load Balancers</a>
+        </li>
+    </ul>
+</li>

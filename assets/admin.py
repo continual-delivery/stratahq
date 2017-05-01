@@ -3,7 +3,7 @@ from django.utils.formats import mark_safe
 
 # Register your models here.
 from .models import Server, WeblogicServer, PuppetRole, HypervisorHost, Application, ApplicationStack, TaskHistory
-
+from .services import tcp_connectivity, managed_servers
 
 @admin.register(Server)
 class ServerAdmin(admin.ModelAdmin):
@@ -50,15 +50,15 @@ class WeblogicServerAdmin(admin.ModelAdmin):
     )
 
     def _nodemanager(self, obj):
-        return obj.nodemanager_health()
+        return tcp_connectivity(obj.connect_to(), obj.nodemanager_port)
     _nodemanager.boolean = True
 
     def _adminserver(self, obj):
-        return obj.adminserver_health()
+        return tcp_connectivity(obj.connect_to(), obj.adminserver_port)
     _adminserver.boolean = True
 
     def _servers(self, obj):
-        srv_json = obj.managed_servers()
+        srv_json = managed_servers(obj.connect_to())
         html = '<table>'
         if isinstance(srv_json, list):
 

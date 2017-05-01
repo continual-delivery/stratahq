@@ -21,7 +21,7 @@ class JenkinsTask(Task):
 
 @app.task(base=JenkinsTask)
 def run_jenkins_job(job_name, parameters={}):
-    pass
+    run_jenkins_job.master.build_job(job_name, parameters)
 
 
 @app.task(base=JenkinsTask)
@@ -41,12 +41,10 @@ def update_jenkins_joblist():
 	        'fullname': 'some-task'
         }
         """
-
-        j = (job['name'], job['fullname'])
-        jobs.append(j)
+        jobs.append((job['name'], 'Jenkins: %s' % job['fullname']))
 
     # We'll make this persistent in the cache. but still update it regularly.
-    cache.set('jenkins_joblist', jobs, 0)
+    cache.set('jenkins_joblist', jobs)
 
 
 # Weblogic tasks - Probably need a refactor here...?
@@ -136,6 +134,6 @@ app.conf.beat_schedule = {
     },
     'jenkins-jobslist': {
         'task': 'assets.tasks.update_jenkins_joblist',
-        'schedule': 300,
+        'schedule': 60,
     },
 }

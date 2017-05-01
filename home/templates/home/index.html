@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+{% block pageclass %}gray-bg{% endblock %}
+
+{% block content %}
+    <div class="col-lg-3">
+        <div class="widget style1 navy-bg">
+            <div class="row">
+                <div class="col-xs-4">
+                    <i class="fa fa-server fa-5x"></i>
+                </div>
+                <div class="col-xs-8 text-right">
+                    <span> Servers </span>
+                    <h2 class="font-bold">{{ server_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="col-lg-3">
+        <div class="widget style1 lazur-bg">
+            <div class="row">
+                <div class="col-xs-4">
+                    <i class="fa fa-desktop fa-5x"></i>
+                </div>
+                <div class="col-xs-8 text-right">
+                    <span> Applications </span>
+                    <h2 class="font-bold">{{ application_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="col-lg-3">
+        <div class="widget style1 yellow-bg">
+            <div class="row">
+                <div class="col-xs-4">
+                    <i class="fa fa-group fa-5x"></i>
+                </div>
+                <div class="col-xs-8 text-right">
+                    <span> Customers </span>
+                    <h2 class="font-bold">{{ customer_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="col-lg-3">
+        <div class="widget style1 red-bg">
+            <div class="row">
+                <div class="col-xs-4">
+                    <i class="fa fa-cloud fa-5x"></i>
+                </div>
+                <div class="col-xs-8 text-right">
+                    <span> Environments</span>
+                    <h2 class="font-bold">{{ customer_environment_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    {%  if task_list %}
+        <div class="ibox-content">
+        <div class="table-responsive">
+                    <h2>Recent Tasks</h2>
+
+            <table class="table table-hover issue-tracker">
+                <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Environment</th>
+                    <th>Servers</th>
+                    <th>User</th>
+                    <th>Started</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {%  for task in task_list %}
+                    <tr>
+                        <td>
+                            <span class="label label-{{ task.level }}">{{ task.task_name }}</span>
+                        </td>
+                        <td class="issue-info">
+                            <a href="{{ task.task_log }}" title="Task Log" target="_blank">
+                                {{ task.customer_environment }}
+                                <small>
+                                    {{ task.reason }}
+                                </small>
+                            </a>
+                        </td>
+                        <td>
+                            {{ task.servers }}
+                        </td>
+                        <td>
+                            {{ task.ran_by }}
+                        </td>
+                        <td>
+                            {{ task.start_time }}
+                        </td>
+                        <td>
+                            {{ task.duration }}
+                        </td>
+                        <td>
+                            {{ task.status.upper }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No task history yet.</p>
+    {% endif %}
+</div>
+{% endblock content %}

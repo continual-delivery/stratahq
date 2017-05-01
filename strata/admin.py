@@ -5,6 +5,7 @@ from adminsortable2.admin import SortableInlineAdminMixin
 
 # Register your models here.
 from assets.models import Server
+from assets.services import tcp_connectivity, managed_servers
 from .models import StrataServer, StrataApplication, StrataApplicationStack, \
     SortableStrataApplication, StrataCustomerStack
 
@@ -14,16 +15,17 @@ class StrataServerAdmin(admin.ModelAdmin):
                     '_nodemanager', '_adminserver','_servers',)
     list_filter = ('environment', 'owner',)
 
+
     def _nodemanager(self, obj):
-        return obj.nodemanager_health()
+        return tcp_connectivity(obj.connect_to(), obj.nodemanager_port)
     _nodemanager.boolean = True
 
     def _adminserver(self, obj):
-        return obj.adminserver_health()
+        return tcp_connectivity(obj.connect_to(), obj.adminserver_port)
     _adminserver.boolean = True
 
     def _servers(self, obj):
-        srv_json = obj.managed_servers()
+        srv_json = managed_servers(obj.connect_to())
         html = '<table>'
         if isinstance(srv_json, list):
 

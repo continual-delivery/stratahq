@@ -23,9 +23,15 @@ admin.site.site_header = settings.ADMIN_SITE_HEADER
 
 urlpatterns = [
     url(r'^login/$', auth_views.login, {'template_name': 'login.html'},  name='login'),
-    url(r'^logout/$', auth_views.logout, name='logout'),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/login'}, name='logout'),
     # Admin site
     url(r'^admin/', admin.site.urls),
     # Redirect root to /admin
-    url(r'^$', lambda _: redirect('admin:index'), name='index'),
+    url(r'^$', lambda _: redirect('home:index'), name='index'),
+    # The home app
+    url(r'^home/', include('home.urls')),
+    # The assets app
+    url(r'^assets/', include('strata.urls')),
+    # The Strata app
+    url(r'^strata/', include('strata.urls')),
 ]

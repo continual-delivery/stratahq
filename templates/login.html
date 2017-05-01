@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
+{% block header %}{% endblock %}
+{% block sidebar %}{% endblock %}
 
 {% block bodyclass %}gray-bg{% endblock %}
+{% block pagewrapperid %}login{% endblock %}
 
 {% block title %}Login{% endblock %}
 
@@ -11,19 +14,25 @@
             <h2>StrataHQ Login</h2>
             {% if form.errors %}
                 <div class="alert alert-danger">
-                    Your username and password didn't match. Please try again.
+                    Your username or password are incorrect. Please try again.
                 </div>
             {% endif %}
-            <form class="m-t" role="form" id="login-form" method="post">
+            <form class="m-t" id="login-form" method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Username" required="" name="username"
-                                                                                       autofocus maxlength="254"
-                                                                                       required id="id_username">
+                    <div class="input-group margin-bottom-sm">
+                        <span class="input-group-addon"><i class="fa fa-user fa-fw" aria-hidden="true"></i></span>
+                        <input type="text" class="form-control" placeholder="Username" name="username"
+                               autofocus maxlength="254"
+                               required id="id_username">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Password" required="" name="password"
-                                                                                       required id="id_password">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span>
+                        <input type="password" class="form-control" placeholder="Password" name="password"
+                               required id="id_password">
+                    </div>
                 </div>
 
                 <input type="submit" value="Login"

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'assets',
     'deployments',
     'strata',
+    'home',
 ]
 
 
@@ -100,6 +101,8 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "PICKLE_VERSION": 4,
+            "SOCKET_CONNECT_TIMEOUT": 5,  # in seconds
+            "SOCKET_TIMEOUT": 5,  # in seconds
         }
     }
 }
@@ -158,7 +161,7 @@ STATICFILES_DIRS = [
 ADMIN_SITE_HEADER = "Strata HQ"
 
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/home/'
 
 # Jenkins related config
 JENKINS = {
