@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Strata Servers{% endblock %}
+{% block pageclass %}gray-bg{% endblock %}
+
+{% load weblogic_tags %}
+{% load badge_tags %}
+
+{% block content %}
+    <div class="ibox-content">
+        <h2>{{ server_role|title }} Servers</h2>
+        {% if strataserver_list %}
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Hostname</th>
+                    <th>Puppet Role</th>
+                    <th>Environment</th>
+                    {% if server_role == 'app' %}
+                        <th>Nodemanager</th>
+                        <th>AdminServer</th>
+                        <th>Managed Servers</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for server in strataserver_list %}
+                    <tr data-toggle="modal" data-target="#{{ server.name }}">
+                        <td>{{ server.name }}</td>
+                        <td>{{ server.puppet_role }}</td>
+                        <td>{{ server.environment }}</td>
+                        {% if server_role == 'app' %}
+                            <td>{{ server.connect_to | tcp_health:server.nodemanager_port }}</td>
+                            <td>{{ server.connect_to | tcp_health:server.adminserver_port }}</td>
+                            <td>{{ server.connect_to | get_managed_servers }}</td>
+                        {%  endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No servers yet.</p>
+        {% endif %}
+    </div>
+
+    {% for server in strataserver_list %}
+    <div class="modal inmodal fade" id="{{ server.name }}" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Server: {{ server.name }}</h4>
+                    <small class="font-bold">
+                        {{ server | puppet_role_badge }}
+                        {{ server | puppet_env_badge }}
+                        {{ server | status_badge }}
+                    </small>
+                </div>
+                <div class="modal-body">
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+{% endblock content %}
