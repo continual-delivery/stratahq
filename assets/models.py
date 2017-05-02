@@ -113,7 +113,6 @@ class Server(models.Model):
 
         super(Server, self).save(*args, **kwargs)
 
-
     def puppet_role(self):
         """
         Return the Puppet role assigned to this server

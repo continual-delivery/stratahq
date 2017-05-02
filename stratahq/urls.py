@@ -31,7 +31,7 @@ urlpatterns = [
     # The home app
     url(r'^home/', include('home.urls')),
     # The assets app
-    url(r'^assets/', include('strata.urls')),
+    url(r'^assets/', include('assets.urls')),
     # The Strata app
     url(r'^strata/', include('strata.urls')),
 ]

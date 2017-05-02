@@ -17,7 +17,7 @@
             </div>
         </div>
     </div>
-        <div class="col-lg-3">
+    <div class="col-lg-3">
         <div class="widget style1 lazur-bg">
             <div class="row">
                 <div class="col-xs-4">
@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-        <div class="col-lg-3">
+    <div class="col-lg-3">
         <div class="widget style1 yellow-bg">
             <div class="row">
                 <div class="col-xs-4">
@@ -43,7 +43,7 @@
             </div>
         </div>
     </div>
-        <div class="col-lg-3">
+    <div class="col-lg-3">
         <div class="widget style1 red-bg">
             <div class="row">
                 <div class="col-xs-4">
@@ -56,59 +56,58 @@
             </div>
         </div>
     </div>
-    {%  if task_list %}
-        <div class="ibox-content">
-        <div class="table-responsive">
-                    <h2>Recent Tasks</h2>
-
-            <table class="table table-hover issue-tracker">
-                <thead>
-                <tr>
-                    <th>Task</th>
-                    <th>Environment</th>
-                    <th>Servers</th>
-                    <th>User</th>
-                    <th>Started</th>
-                    <th>Duration</th>
-                    <th>Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                {%  for task in task_list %}
+    <div class="ibox-content">
+        {%  if task_list %}
+            <div class="table-responsive">
+                <h2>Recent Tasks</h2>
+                <table class="table table-hover issue-tracker">
+                    <thead>
                     <tr>
-                        <td>
-                            <span class="label label-{{ task.level }}">{{ task.task_name }}</span>
-                        </td>
-                        <td class="issue-info">
-                            <a href="{{ task.task_log }}" title="Task Log" target="_blank">
-                                {{ task.customer_environment }}
-                                <small>
-                                    {{ task.reason }}
-                                </small>
-                            </a>
-                        </td>
-                        <td>
-                            {{ task.servers }}
-                        </td>
-                        <td>
-                            {{ task.ran_by }}
-                        </td>
-                        <td>
-                            {{ task.start_time }}
-                        </td>
-                        <td>
-                            {{ task.duration }}
-                        </td>
-                        <td>
-                            {{ task.status.upper }}
-                        </td>
+                        <th>Task</th>
+                        <th>Environment</th>
+                        <th>Servers</th>
+                        <th>User</th>
+                        <th>Started</th>
+                        <th>Duration</th>
+                        <th>Status</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <p>No task history yet.</p>
-    {% endif %}
-</div>
+                    </thead>
+                    <tbody>
+                    {%  for task in task_list %}
+                        <tr>
+                            <td>
+                                <span class="badge badge-{{ task.level }}">{{ task.task_name }}</span>
+                            </td>
+                            <td class="issue-info">
+                                <a href="{{ task.task_log }}" title="Task Log" target="_blank">
+                                    {{ task.customer_environment }}
+                                    <small>
+                                        {{ task.reason }}
+                                    </small>
+                                </a>
+                            </td>
+                            <td>
+                                {{ task.servers }}
+                            </td>
+                            <td>
+                                {{ task.ran_by }}
+                            </td>
+                            <td>
+                                {{ task.start_time }}
+                            </td>
+                            <td>
+                                {{ task.duration }}
+                            </td>
+                            <td>
+                                {{ task.status.upper }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No task history yet.</p>
+        {% endif %}
+    </div>
 {% endblock content %}

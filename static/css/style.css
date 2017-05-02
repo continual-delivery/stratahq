@@ -182,6 +182,9 @@ h5 {
 .nav.nav-second-level > li.active {
     border: none;
 }
+.nav.nav-third-level > li.active {
+    border: none;
+}
 .nav.nav-second-level.collapse[style] {
     height: auto !important;
 }
@@ -3945,6 +3948,10 @@ table.table-mail tr td {
 .black-bg {
     background-color: #262626;
 }
+.green-bg {
+  background-color: #84c61c;
+  color: #ffffff;
+}
 .panel-primary {
     border-color: #1ab394;
 }
@@ -4033,7 +4040,7 @@ table.table-mail tr td {
     color: inherit;
 }
 .text-success {
-    color: #1c84c6;
+    color: #84c61c;
 }
 .text-info {
     color: #23c6c8;
