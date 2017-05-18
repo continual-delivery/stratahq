@@ -39,7 +39,7 @@ _TOMCAT_VERSIONS = (
 _SERVER_STATUSES = (
     ('blank', 'Needs Provisioning'),
     ('installed', 'OS Installed'),
-    ('unnassigned', 'Unassigned'),
+    ('unassigned', 'Unassigned'),
     ('live', 'Live System'),
     ('maintenance', 'Out for Maintenance'),
     ('broken', 'Needs Fixing'),

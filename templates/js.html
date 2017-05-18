@@ -37,3 +37,16 @@
 <!-- Toastr -->
 <script src="{% block js-toastr %}{% static "js/plugins/toastr/toastr.min.js" %}{% endblock %}"></script>
 
+<!-- Enable us to AJAX submit forms (used on modal forms) -->
+<script src="{% block js-jquery-form %}{% static "js/jquery.form.js" %}{% endblock %}"></script>
+
+<!-- Allows us to load a modal on request to /url/#modalname -->
+<script>
+  //shortcut for $(document).ready
+  $(function(){
+      if(window.location.hash) {
+          var hash = window.location.hash;
+          $(hash).modal('toggle');
+      }
+  });
+</script>

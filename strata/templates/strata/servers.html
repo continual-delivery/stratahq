@@ -7,8 +7,30 @@
 {% load badge_tags %}
 
 {% block content %}
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>{{ server_role|title }} Servers</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/home/">Home</a>
+                </li>
+                <li>
+                    Strata
+                </li>
+                <li>
+                    Servers
+                </li>
+                <li class="active">
+                    <strong>{{ server_role|title }} Servers</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+    </div>
+
     <div class="ibox-content">
-        <h2>{{ server_role|title }} Servers</h2>
         {% if strataserver_list %}
             <table class="table table-hover">
                 <thead>
@@ -16,6 +38,11 @@
                     <th>Hostname</th>
                     <th>Puppet Role</th>
                     <th>Environment</th>
+                    {% comment %}
+                    There's certain things we only want to show for specific server types.
+                    Rather than separate templates or funky includes I'm doing it inline for the sake of
+                    visibility.
+                    {% endcomment %}
                     {% if server_role == 'app' %}
                         <th>Nodemanager</th>
                         <th>AdminServer</th>
@@ -34,6 +61,34 @@
                             <td>{{ server.connect_to | tcp_health:server.adminserver_port }}</td>
                             <td>{{ server.connect_to | get_managed_servers }}</td>
                         {%  endif %}
+                        {% comment %}
+                        Each row will show a modal dialog box for interaction with a server.
+                        We'll render in each row avoiding the need to loop through each server
+                        object again further down the page. It also means that the modal is
+                        all ready to go on click and we don't have to wait for an ajax call / extra
+                        http requests.
+                        {% endcomment %}
+                        <div class="modal inmodal fade" id="{{ server.name }}" tabindex="-1" role="dialog"  aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        <h4 class="modal-title">Server: {{ server.name }}</h4>
+                                        <small class="font-bold">
+                                            {{ server | puppet_role_badge }}
+                                            {{ server | puppet_env_badge }}
+                                            {{ server | status_badge }}
+                                        </small>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% include 'strata/server_form.html' %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -42,30 +97,4 @@
             <p>No servers yet.</p>
         {% endif %}
     </div>
-
-    {% for server in strataserver_list %}
-    <div class="modal inmodal fade" id="{{ server.name }}" tabindex="-1" role="dialog"  aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title">Server: {{ server.name }}</h4>
-                    <small class="font-bold">
-                        {{ server | puppet_role_badge }}
-                        {{ server | puppet_env_badge }}
-                        {{ server | status_badge }}
-                    </small>
-                </div>
-                <div class="modal-body">
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-
 {% endblock content %}

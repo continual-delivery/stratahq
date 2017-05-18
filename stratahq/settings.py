@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_redis',
     'adminsortable2',
     'smart_selects',
+    'widget_tweaks',
     'management',
     'assets',
     'deployments',
