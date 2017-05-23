@@ -52,7 +52,7 @@
                 </thead>
                 <tbody>
                 {% for server in strataserver_list %}
-                    <tr data-toggle="modal" data-target="#{{ server.name }}">
+                    <tr class="modal-row" data-toggle="modal" data-target="#{{ server.name }}">
                         <td>{{ server.name }}</td>
                         <td>{{ server.puppet_role }}</td>
                         <td>{{ server.environment }}</td>
@@ -68,7 +68,7 @@
                         all ready to go on click and we don't have to wait for an ajax call / extra
                         http requests.
                         {% endcomment %}
-                        <div class="modal inmodal fade" id="{{ server.name }}" tabindex="-1" role="dialog"  aria-hidden="true">
+                        <div class="modal inmodal" id="{{ server.name }}" tabindex="-1" role="dialog"  aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -82,6 +82,7 @@
                                     </div>
                                     <div class="modal-body">
                                         {% include 'strata/server_form.html' %}
+                                        {% include 'strata/server_tasks.html' %}
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>

@@ -8395,3 +8395,7 @@ body.md-skin {
         margin: 0;
     }
 }
+
+.modal-row:hover {
+    cursor: pointer;
+}

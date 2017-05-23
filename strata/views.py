@@ -2,7 +2,7 @@ from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 
-from assets.models import _SERVER_STATUSES
+from assets.models import _SERVER_STATUSES, ServerRoleTask
 from .models import StrataServer
 from .forms import ServerForm
 
@@ -29,17 +29,16 @@ class StrataAppServersView(StrataServerView):
         context['server_role'] = 'app'
         context['server_form'] = self.server_form
         context['server_statuses'] = _SERVER_STATUSES
+        context['server_tasks'] = ServerRoleTask.objects.get(role='app').tasks.all()
+        print(context)
         return context
 
     def post(self, request, *args, **kwargs):
-        # if 'puppet_form' in self.puppet_form.changed_data:
         server = StrataServer.objects.get(pk=request.POST.get('pk'))
-        print(request.POST)
         form = ServerForm(request.POST, instance=server)
         if form.is_valid():
             form.save()
-            #srv_obj = StrataServer.objects.get(id=self.)
-        return HttpResponseRedirect('/strata/servers/app/#%s' % 'weblogic')
+        return HttpResponseRedirect('/strata/servers/app/#%s' % server.name)
 
 
 

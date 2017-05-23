@@ -1,0 +1,27 @@
+<div class="ibox-content">
+    <form method="post" action="#{{ server.name }}">
+        {% csrf_token %}
+        <input type="hidden" name="pk" value="{{ server.pk }}">
+        <h3>Puppet Override</h3>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="id_override_puppet_role">Role:</label>
+            <div class="col-sm-10"><input type="text" class="form-control" name="override_puppet_role" id="id_override_puppet_role"{% if server.override_puppet_role != None %} value="{{ server.override_puppet_role }}"{% endif %}/></div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="id_override_puppet_environment">Environment:</label>
+            <div class="col-sm-10"><input type="text" class="form-control" name="override_puppet_environment" id="id_override_puppet_environment"{% if server.override_puppet_environment != None %} value="{{ server.override_puppet_environment }}"{% endif %}/></div>
+        </div>
+        <h3>Server Status</h3>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="id_status">Status:</label>
+            <div class="col-sm-10">
+                <select class="form-control m-b" id="id_status" name="status">
+                    {% for state in server_statuses %}
+                        <option value="{{ state.0 }}"{% if server.status == state.0 %} selected{% endif %}>{{ state.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button class="btn btn-primary" value="server_form" type="submit">Save changes</button>
+    </form>
+</div>

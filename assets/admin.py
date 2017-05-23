@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.utils.formats import mark_safe
 
 # Register your models here.
-from .models import Server, WeblogicServer, PuppetRole, HypervisorHost, Application, ApplicationStack, TaskHistory
+from .models import Server, WeblogicServer, PuppetRole, HypervisorHost, Application, \
+    ApplicationStack, TaskHistory, ServerTask, ServerRoleTask
 from .services import tcp_connectivity, managed_servers
 
 @admin.register(Server)
@@ -155,6 +156,22 @@ class ApplicationStackAdmin(admin.ModelAdmin):
     # We want to make ALL fields readonly on this view.
     def get_readonly_fields(self, request, obj=None):
         return [f.name for f in self.model._meta.fields]
+
+
+@admin.register(ServerTask)
+class ServerTaskAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(ServerRoleTask)
+class ServerRoleTaskAdmin(admin.ModelAdmin):
+    list_display = ('role', '_tasks')
+
+    def _tasks(self, obj):
+        html=""
+        for s in obj.tasks.all():
+            html+='%s<br />' % s.name
+        return mark_safe(html)
 
 
 @admin.register(TaskHistory)

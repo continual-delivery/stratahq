@@ -282,7 +282,27 @@ class ApplicationStack(models.Model):
         ordering = ('name',)
 
 
-# Create your models here.
+class ServerTask(models.Model):
+    """
+    basic class to achieve multiple choice in admin page
+    """
+    name = models.CharField(max_length=32, unique=True, choices=all_jobs())
+
+    def __str__(self):
+        return self.name
+
+
+class ServerRoleTask(models.Model):
+    """
+    Stores the allowed tasks by server type. Used to limit what tasks can
+    execute on a server type and limit selection in UI
+    """
+    role = models.CharField(max_length=8, choices=_SERVERROLES)
+    tasks = models.ManyToManyField("ServerTask")
+
+    def __str__(self):
+        return self.role
+
 class TaskHistory(models.Model):
     """
     Essentially a high-level, long lived log of task information
