@@ -51,7 +51,7 @@
    celery-worker:
      build:
        context: .
-     command: celery -A stratahq worker -l info
+     command: celery -A stratahq worker -l info --without-mingle --without-gossip
      volumes:
        - .:/code:ro
        - ./data:/code/data:rw

@@ -1,6 +1,5 @@
 {% load static %}
 <!-- Mainly scripts -->
-<script src="{% block js-jquery %}{% static "js/jquery-2.1.1.js" %}{% endblock %}"></script>
 <script src="{% block js-bootstrap %}{% static "js/bootstrap.min.js" %}{% endblock %}"></script>
 <script src="{% block js-metisMenu %}{% static "js/plugins/metisMenu/jquery.metisMenu.js" %}{% endblock %}"></script>
 <script src="{% block js-slimscroll %}{% static "js/plugins/slimscroll/jquery.slimscroll.min.js" %}{% endblock %}"></script>
@@ -45,8 +44,8 @@
   //shortcut for $(document).ready
   $(function(){
       if(window.location.hash) {
-          var hash = window.location.hash;
-          $(hash).modal('toggle');
+          var modal = window.location.hash;
+          $(modal).modal('toggle');
       }
   });
 </script>

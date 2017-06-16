@@ -3,8 +3,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 
 from assets.models import _SERVER_STATUSES, ServerRoleTask
+from assets.tasks import run_jenkins_job
 from .models import StrataServer
 from .forms import ServerForm
+from stratahq.settings import JENKINS
+
+import json
 
 class StrataServerView(LoginRequiredMixin, generic.ListView):
     """
@@ -25,12 +29,11 @@ class StrataAppServersView(StrataServerView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(StrataAppServersView, self).get_context_data(**kwargs)
-        # Add in a QuerySet of last 20 tasks
         context['server_role'] = 'app'
         context['server_form'] = self.server_form
         context['server_statuses'] = _SERVER_STATUSES
         context['server_tasks'] = ServerRoleTask.objects.get(role='app').tasks.all()
-        print(context)
+        context['jenkins_server'] = JENKINS['SERVER']
         return context
 
     def post(self, request, *args, **kwargs):
@@ -40,8 +43,14 @@ class StrataAppServersView(StrataServerView):
             form.save()
         return HttpResponseRedirect('/strata/servers/app/#%s' % server.name)
 
+    def get(self, request, *args, **kwargs):
+        try:
+            if request.GET['action']:
+                run_jenkins_job(request.GET['action'], { "server": request.GET['server']})
+        except:
+            pass
 
-
+        return super(StrataAppServersView, self).get(request, *args, **kwargs)
 
 class StrataAssentisServersView(StrataServerView):
     """
@@ -54,4 +63,18 @@ class StrataAssentisServersView(StrataServerView):
         context = super(StrataAssentisServersView, self).get_context_data(**kwargs)
         # Add in a QuerySet of last 20 tasks
         context['server_role'] = 'Assentis'
+        return context
+
+
+class StrataORBServersView(StrataServerView):
+    """
+    ORB Server view
+    """
+    queryset = StrataServer.objects.filter(role='orb').order_by('name')
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(StrataORBServersView, self).get_context_data(**kwargs)
+        # Add in a QuerySet of last 20 tasks
+        context['server_role'] = 'ORB'
         return context

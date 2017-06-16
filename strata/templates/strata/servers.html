@@ -87,13 +87,18 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                                     </div>
+                                    <script type = "text/javascript">
+                                        $('#{{ server.name }}').on('hidden.bs.modal', function () {
+                                           window.location.href =  window.location.href.split("?")[0]
+                                        })
+                                    </script>
                                 </div>
                             </div>
                         </div>
                     </tr>
                 {% endfor %}
                 </tbody>
-            </table>
+              </table>
         {% else %}
             <p>No servers yet.</p>
         {% endif %}

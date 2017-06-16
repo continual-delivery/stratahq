@@ -9,6 +9,7 @@
     <title>StrataHQ | {% block title %}{% endblock %}</title>
     {% block style %}{% include 'style.html' %}{% endblock %}
     {% block extrahead %}{% endblock %}
+    <script src="{% block js-jquery %}{% static "js/jquery-2.1.1.js" %}{% endblock %}"></script>
 </head>
 {% load i18n %}
 

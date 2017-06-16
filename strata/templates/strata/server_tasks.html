@@ -1,6 +1,78 @@
 <div class="ibox-content">
     <h3>Server Tasks</h3>
     {% for task in server_tasks %}
-        <p>{{ task }}</p>
+        <a href="?action={{ task }}&server={{ server.name }}#{{ server.name }}"
+           class="btn btn-primary btn-md">{{ task }}</a>
     {% endfor %}
 </div>
+{% if request.GET.action %}
+    <div class="ibox-content">
+        <pre><div id="actionlog"></div></pre>
+
+        <script type="text/javascript">
+
+            function getLatestBuildNumber(callback) {
+                var serverBuildNumbers = [];
+                $.getJSON("{{ jenkins_server }}/job/{{ request.GET.action }}/api/json?tree=builds[url]", function (data) {
+                    var buildUrls = [];
+                    $.each(data.builds, function (i, val) {
+                        buildUrls.push(val.url);
+                    });
+                    $.each(buildUrls, function (i, buildUrl) {
+                        $.getJSON(buildUrl + "/api/json", function (buildInfo) {
+                            $.each(buildInfo.actions, function (i, action) {
+                                if (action.parameters) {
+                                    $.each(action.parameters, function (i, parameter) {
+                                        if (parameter.name == "server" && parameter.value == "{{ server.name }}") {
+                                            serverBuildNumbers[buildInfo.number] = buildInfo.number;
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    });
+                });
+                setTimeout(function () {
+                    bnums = serverBuildNumbers.filter(Number);
+                    callback(bnums[bnums.length - 1]);
+                }, 1000);
+            }
+
+            function tailLog(lastBuildNumber, currentBuildNumber) {
+                if (lastBuildNumber !== currentBuildNumber) {
+                    setInterval(function () {
+                        $("#actionlog").load("{{ jenkins_server }}/job/{{ request.GET.action }}/" + currentBuildNumber + "/consoleText", function (response) {
+                            $("#actionlog").html(response.split("\n").slice(-18).join("\n"));
+                        });
+                    }, 1000);
+                } else {
+                    $("#actionlog").text("Loading log...");
+                }
+            }
+
+            function getCurrentBuildNumber(callback) {
+                getLatestBuildNumber(function (currentBuildNumber) {
+                    callback(currentBuildNumber)
+                });
+            }
+
+            $(document).ready(function () {
+                // Trick the "Loading log..." message into been displayed
+                tailLog(0, 0);
+                var lastBuildNumber = 0;
+                var currentBuildNumber = 0;
+                var buildTestTimer = setInterval(function () {
+                    getCurrentBuildNumber(function (buildNumber) {
+                        if (!(lastBuildNumber > 0 && lastBuildNumber !== buildNumber)) {
+                            lastBuildNumber = buildNumber;
+                        } else {
+                            clearInterval(buildTestTimer);
+                            currentBuildNumber = buildNumber;
+                            tailLog(lastBuildNumber, currentBuildNumber);
+                        }
+                    });
+                }, 1000);
+            });
+        </script>
+    </div>
+{% endif %}
